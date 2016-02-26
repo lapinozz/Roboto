@@ -29,3 +29,6 @@
 
 # Hided files
 .*
+
+#Temporary files
+*~
