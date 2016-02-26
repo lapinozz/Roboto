@@ -1,0 +1,124 @@
+# depslib dependency file v1.0
+1449281373 source:/home/lapinozz/Documents/Projects/Roboto/Assembler.cpp
+	"Assembler.h"
+	"MathParser.h"
+
+1447193489 /home/lapinozz/Documents/Projects/Roboto/Assembler.h
+	"Parser.h"
+
+1450361798 /home/lapinozz/Documents/Projects/Roboto/Parser.h
+	"stdafx.h"
+	"Memory.h"
+	"Hash.hpp"
+	"BoxedFunction.hpp"
+
+1456502504 /home/lapinozz/Documents/Projects/Roboto/stdafx.h
+	<memory>
+	<vector>
+	<map>
+	<unordered_map>
+	<string>
+	<fstream>
+	<regex>
+	<queue>
+	<stack>
+	<functional>
+	<math.h>
+	<list>
+	<random>
+	<cassert>
+	<iostream>
+
+1450362563 /home/lapinozz/Documents/Projects/Roboto/Memory.h
+	"Utility.h"
+
+1456502872 /home/lapinozz/Documents/Projects/Roboto/Utility.h
+	"stdafx.h"
+
+1448840460 /home/lapinozz/Documents/Projects/Roboto/Hash.hpp
+	<stdint.h>
+	<string>
+
+1449349185 /home/lapinozz/Documents/Projects/Roboto/BoxedFunction.hpp
+	"BoxedValue.hpp"
+	"FunctionBinder.hpp"
+
+1449350723 /home/lapinozz/Documents/Projects/Roboto/BoxedValue.hpp
+	<map>
+	<memory>
+	<type_traits>
+	"Type_Info.hpp"
+
+1447809342 /home/lapinozz/Documents/Projects/Roboto/Type_Info.hpp
+	<memory>
+	<type_traits>
+	<typeinfo>
+	<string>
+
+1449455290 /home/lapinozz/Documents/Projects/Roboto/FunctionBinder.hpp
+	<functional>
+
+1447016031 /home/lapinozz/Documents/Projects/Roboto/MathParser.h
+	"stdafx.h"
+
+1449503990 source:/home/lapinozz/Documents/Projects/Roboto/Compiler.cpp
+	"Compiler.h"
+	"Utility.h"
+	"Parser.h"
+	"MathParser.h"
+
+1448651715 /home/lapinozz/Documents/Projects/Roboto/Compiler.h
+	"stdafx.h"
+	"MathParser.h"
+	"Parser.h"
+	"Memory.h"
+
+1448650228 source:/home/lapinozz/Documents/Projects/Roboto/Hash.cpp
+	"Hash.hpp"
+	<stdlib.h>
+
+1456502577 source:/home/lapinozz/Documents/Projects/Roboto/IDPool.cpp
+	"IDPool.h"
+	"Utility.h"
+
+1435345784 /home/lapinozz/Documents/Projects/Roboto/IDPool.h
+	"stdafx.h"
+
+1452444298 source:/home/lapinozz/Documents/Projects/Roboto/Linker.cpp
+	"Linker.h"
+
+1447536082 /home/lapinozz/Documents/Projects/Roboto/Linker.h
+	"Compiler.h"
+
+1456502623 source:/home/lapinozz/Documents/Projects/Roboto/main.cpp
+	"stdafx.h"
+	"Parser.h"
+	"Compiler.h"
+	"Assembler.h"
+	"Linker.h"
+	"MathParser.h"
+	"Utility.h"
+
+1448915475 source:/home/lapinozz/Documents/Projects/Roboto/MathParser.cpp
+	"MathParser.h"
+	"Utility.h"
+	"MathHelper.h"
+
+1456502730 /home/lapinozz/Documents/Projects/Roboto/MathHelper.h
+	"stdafx.h"
+
+1450362563 source:/home/lapinozz/Documents/Projects/Roboto/Memory.cpp
+	"Memory.h"
+
+1450362145 source:/home/lapinozz/Documents/Projects/Roboto/Parser.cpp
+	"Parser.h"
+	"Utility.h"
+	"Assembler.h"
+
+1435334743 source:/home/lapinozz/Documents/Projects/Roboto/stdafx.cpp
+	"stdafx.h"
+
+1448242162 source:/home/lapinozz/Documents/Projects/Roboto/Utility.cpp
+	"Utility.h"
+	<windows.h>
+

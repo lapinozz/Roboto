@@ -1,0 +1,9 @@
+function main()
+    print getnum(getnum(getnum(getnum(getnum(getnum(0)))))) // return 6
+end 
+
+function getnum(num)
+    return num + 1
+end
+
+

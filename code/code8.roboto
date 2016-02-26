@@ -1,0 +1,8 @@
+function main()
+    s1 = getnum(8, 2)
+    print getnum(8, 2)
+end
+
+function getnum(num, num2)
+    return num + num2
+end

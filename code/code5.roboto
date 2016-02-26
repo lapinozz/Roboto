@@ -1,0 +1,21 @@
+//<-- This is a freaking kewl comment :)
+
+
+function main()
+    s1 = 0
+    input s1
+    print s1
+    s1 = 0
+    print10()
+    s1 = 0
+    print10()
+end
+
+function print10()
+    while ( s1 != 10 )
+        print s1
+        s1 = s1 + 1
+    end
+end
+
+

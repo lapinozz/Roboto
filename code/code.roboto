@@ -1,0 +1,13 @@
+//calculate the result of two number and print them
+input s
+input var2
+// this is freaking cool comment
+if s == var2 goto printsecond // another comment
+print s
+goto end
+:printsecond
+print var2
+:end
+end
+
+

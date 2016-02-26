@@ -1,0 +1,10 @@
+//<-- This is a freaking kewl comment :)
+
+
+function main()
+    inputc s1
+    s2 = s1
+    printc s2
+end
+
+

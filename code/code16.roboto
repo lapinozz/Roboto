@@ -1,0 +1,10 @@
+function main()
+    print rec(0)
+end 
+
+function rec(num)
+    if(num < 10)
+        print num
+        rec(num + 1)
+    end
+end

@@ -1,0 +1,14 @@
+//<-- This is a freaking kewl comment :)
+
+input s1
+input s2
+
+if(s1==s2)//and another one
+    print s2
+else
+    print s1
+end
+
+exit
+
+

@@ -1,0 +1,12 @@
+//<-- This is a freaking kewl comment :)
+
+s1 = 0
+
+while ( s1 != 10 )
+    print s1
+    s1 = s1 + 1
+end
+
+exit
+
+

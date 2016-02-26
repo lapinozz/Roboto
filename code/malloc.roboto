@@ -1,0 +1,15 @@
+int __memory_start;
+int __programSize;
+
+function init_malloc()
+{
+    __memory_start = __programSize;
+
+}
+
+function malloc(int size)
+{
+	
+}
+
+

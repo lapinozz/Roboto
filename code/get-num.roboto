@@ -1,0 +1,16 @@
+//"testt   test
+//+-/*" +++;
+
+function getnum(num)
+{
+    if(num == 1) 
+    {
+        return -100;
+    }
+    else if(num == 2)  {
+        return 200;   }
+        
+    return 0;
+}
+//test
+

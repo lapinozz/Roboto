@@ -1,0 +1,16 @@
+//<-- This is a freaking kewl comment :)
+
+
+function main()
+    s1 = get1() + get2()
+    print s1
+end
+
+function get2()
+    return 1 + 1
+end
+
+function get1()
+    return 1
+end
+
