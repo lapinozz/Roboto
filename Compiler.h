@@ -240,7 +240,7 @@ class Compiler
         void addInstruction(Parser::OPP opp, int operand, Parser::Type type = Parser::INT);
 
         std::string solve(std::string postfix);
-        std::string solveOPP(MathParser::OPP opp, std::string val1, std::string val2);
+        std::string solveOPP(MathParser::Operator opp, std::string val1, std::string val2);
 
         std::string mProgram;
 

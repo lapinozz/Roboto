@@ -15,6 +15,22 @@ int main()
     std::cout << murmurHash3_x86_32("size") << std::endl;
     std::cout << murmurHash3_x86_32("superTest") << std::endl;
 
+
+    std::string string;
+    string = "1+-2";
+    string = "1+(-2)";
+    string = "1+-+-+-2";
+    string = "1+-----2";
+    string = "1+-(2)";
+    string = "-2+1";
+    string = "1+2+3+4+5";
+//    string = "v=m*f";
+    std::cout << string << std::endl;
+    std::cout << MathParser::toPostfix(string) << std::endl;
+    std::cout << MathParser::solve(MathParser::toPostfix(string)) << std::endl;
+
+//    return 0;
+
     Parser parser;
     Compiler compiler;
 
@@ -22,8 +38,8 @@ int main()
 
     compiler.loadFromFile("./code/code11-v2.roboto");
     datas.push_back(compiler.compile());
-    compiler.loadFromFile("./code/malloc.roboto");
-    datas.push_back(compiler.compile());
+//    compiler.loadFromFile("./code/malloc.roboto");
+//    datas.push_back(compiler.compile());
 
     parser.loadFromMemory(Linker::link(datas));
     parser.bindFunction("superTest", [](){std::cout << "working"; return 5;});

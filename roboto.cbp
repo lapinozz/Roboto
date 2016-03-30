@@ -7,8 +7,8 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output=".bin/Debug/hackame-server" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".server-obj/Debug/" />
+				<Option output=".bin/Debug/roboto" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Option use_console_runner="0" />
@@ -23,8 +23,8 @@
 				</Linker>
 			</Target>
 			<Target title="Debug - Pause">
-				<Option output=".bin/Debug/hackame-server" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".server-obj/Debug/" />
+				<Option output=".bin/Debug/roboto" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -38,8 +38,8 @@
 				</Linker>
 			</Target>
 			<Target title="Release">
-				<Option output=".bin/Release/hackame-server" prefix_auto="1" extension_auto="1" />
-				<Option object_output=".server-obj/Release/" />
+				<Option output=".bin/Release/roboto" prefix_auto="1" extension_auto="1" />
+				<Option object_output=".obj/Release/" />
 				<Option type="0" />
 				<Option compiler="gcc" />
 				<Compiler>
@@ -74,78 +74,27 @@
 		</Linker>
 		<Unit filename="Assembler.cpp" />
 		<Unit filename="Assembler.h" />
-		<Unit filename="Batchable.h" />
 		<Unit filename="BoxedFunction.hpp" />
 		<Unit filename="BoxedValue.hpp" />
-		<Unit filename="ClientState.cpp" />
-		<Unit filename="ClientState.h" />
-		<Unit filename="CommsDevice.cpp" />
-		<Unit filename="CommsDevice.h" />
 		<Unit filename="Compiler.cpp" />
 		<Unit filename="Compiler.h" />
-		<Unit filename="Component.cpp" />
-		<Unit filename="Component.h" />
-		<Unit filename="ComponentBlueprint.h" />
-		<Unit filename="Config.cpp" />
-		<Unit filename="Config.h" />
-		<Unit filename="Delay.cpp" />
-		<Unit filename="Delay.h" />
-		<Unit filename="Elements.h" />
-		<Unit filename="Engine.cpp" />
-		<Unit filename="Engine.h" />
 		<Unit filename="FunctionBinder.hpp" />
-		<Unit filename="GUI.cpp" />
-		<Unit filename="GUI.h" />
-		<Unit filename="Generator.cpp" />
-		<Unit filename="Generator.h" />
 		<Unit filename="Hash.cpp" />
 		<Unit filename="Hash.hpp" />
-		<Unit filename="Header Guard Check.py" />
 		<Unit filename="IDPool.cpp" />
 		<Unit filename="IDPool.h" />
-		<Unit filename="IRClient.cpp" />
-		<Unit filename="IRClient.h" />
 		<Unit filename="Linker.cpp" />
 		<Unit filename="Linker.h" />
-		<Unit filename="Listener.cpp" />
-		<Unit filename="Listener.h" />
-		<Unit filename="Log.h" />
-		<Unit filename="MathHelper.h" />
 		<Unit filename="MathParser.cpp" />
 		<Unit filename="MathParser.h" />
 		<Unit filename="Memory.cpp" />
 		<Unit filename="Memory.h" />
-		<Unit filename="MenuState.cpp" />
-		<Unit filename="MenuState.h" />
-		<Unit filename="Message.h" />
-		<Unit filename="MetaDataKeys.h" />
-		<Unit filename="MissileLauncher.cpp" />
-		<Unit filename="MissileLauncher.h" />
-		<Unit filename="Network.cpp" />
-		<Unit filename="Network.h" />
-		<Unit filename="Networking/Message.cpp" />
-		<Unit filename="Networking/Message.h" />
 		<Unit filename="Parser.cpp" />
 		<Unit filename="Parser.h" />
-		<Unit filename="Projectile.h" />
-		<Unit filename="RessourceHolder.cpp" />
-		<Unit filename="RessourceHolder.h" />
-		<Unit filename="Robot.cpp" />
-		<Unit filename="Robot.h" />
-		<Unit filename="RobotBlueprint.cpp" />
-		<Unit filename="RobotBlueprint.h" />
-		<Unit filename="RobotFactory.cpp" />
-		<Unit filename="RobotFactory.h" />
-		<Unit filename="ServerState.cpp" />
-		<Unit filename="ServerState.h" />
-		<Unit filename="SpriteBatch.h" />
-		<Unit filename="State.h" />
 		<Unit filename="Type_Info.hpp" />
 		<Unit filename="User.h" />
 		<Unit filename="Utility.cpp" />
 		<Unit filename="Utility.h" />
-		<Unit filename="World.cpp" />
-		<Unit filename="World.h" />
 		<Unit filename="code/code.SPML" />
 		<Unit filename="code/code.roboto" />
 		<Unit filename="code/code10.roboto" />
@@ -174,7 +123,6 @@
 		<Unit filename="code/get-num.roboto" />
 		<Unit filename="code/malloc.roboto" />
 		<Unit filename="code/pre-parser-test.roboto" />
-		<Unit filename="hackame.depend" />
 		<Unit filename="main.cpp" />
 		<Unit filename="stdafx.cpp" />
 		<Unit filename="stdafx.h" />

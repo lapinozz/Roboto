@@ -48,11 +48,11 @@ void Compiler::preProcessor()
 
 void Compiler::preParse()
 {
-    for(unsigned int x = 0; x < mProgram.length() && mProgram.length() > 0; x++)
+    for(size_t x = 0u; x < mProgram.length() && mProgram.length() > 0; x++)
     {
         if(mProgram[x] == '\"')
         {
-            size_t pos = mProgram.find('\"', x + 1);
+            auto pos = mProgram.find('\"', x + 1);
             mStringConst[mCurrentStringConst] = mProgram.substr(x + 1, pos - x - 1);
             mProgram.replace(x, (pos - x) + 1, "STRING_CONST_" + std::to_string(mCurrentStringConst));
             mCurrentStringConst++;
@@ -70,19 +70,24 @@ void Compiler::preParse()
 
     mProgram = replaceAll(mProgram, "\n", "", true);
 
-    for(unsigned int x = 0; x < mProgram.length() && mProgram.length() > 0; x++)
+    for(size_t x = 0u; x < mProgram.length() && mProgram.length() > 0; x++)
     {
         if(mProgram[x] == '\"')
             x = mProgram.find('\"', x + 1);
 
-        MathParser::OPP opp = MathParser::toOPP(mProgram.substr(x, 2));
-
-        if(MathParser::toOPP(mProgram[x]) != MathParser::UNDEFINED || opp != MathParser::UNDEFINED)
+        MathParser::Operator opp;
+        for(size_t size = MathParser::MAX_OPP_SIZE; size > 0; size--)
         {
-            mProgram.insert(x + 1 + (opp == MathParser::UNDEFINED ? 0 : 1) - (mProgram.length() - 1 == x ? 1 : 0), " ");
+            opp = MathParser::toOPP(mProgram.substr(x, size));
+            if(opp != MathParser::UNDEFINED)
+                break;
+        }
+
+        if(opp != MathParser::UNDEFINED)
+        {
+            mProgram.insert(x + opp.str.size(), " ");
             mProgram.insert(x, " ");
-            x += (opp == MathParser::UNDEFINED ? 0 : 1);
-            x++;
+            x += opp.str.size() + 1;
         }
     }
 
@@ -170,7 +175,7 @@ Compiler::CompiledData Compiler::compile()
     preProcessor();
     preParse();
 
-//    std::cout << mProgram << std::endl;
+    std::cout << mProgram << std::endl;
 
     for(std::string line : split(mProgram, "\n"))
     {
@@ -473,13 +478,18 @@ std::string Compiler::solve(std::string postfix)
     std::stack<std::string> s;
     for(std::string& token : tokens)
     {
-        MathParser::OPP opp = MathParser::toOPP(token);
+        auto opp = MathParser::toOPP(token);
         if(opp != MathParser::UNDEFINED)
         {
             std::string x = s.top();
             s.pop();
-            std::string y = s.top();
-            s.pop();
+
+            std::string y = "";
+            if(opp.unary == MathParser::BINARY)
+            {
+                y = s.top();
+                s.pop();
+            }
 
             s.push(solveOPP(opp, y, x));
 //            std::cout << y << " " << opp << " " << x << " = " << s.top() << std::endl;
@@ -504,7 +514,7 @@ std::string Compiler::solve(std::string postfix)
     return s.top();
 }
 
-std::string Compiler::solveOPP(MathParser::OPP opp, std::string val1, std::string val2)
+std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::string val2)
 {
     std::string tmp = "SOLVER_TMP_" + std::to_string(mCurrentSolverTemp++);
 
@@ -600,12 +610,6 @@ std::string Compiler::solveOPP(MathParser::OPP opp, std::string val1, std::strin
         addInstruction(Parser::JMPLESS, 2*4, Parser::JMP_RELATIVE_ADD);
         addInstruction(Parser::NOT, tmp);
     }
-    else if(opp == MathParser::NOT)
-    {
-        addInstruction(Parser::LOAD, val2);
-        addInstruction(Parser::SAVE, tmp);
-        addInstruction(Parser::NOT, tmp);
-    }
     else if(opp == MathParser::FUNCTION_PARAM)
     {
         if(mSolverFunctions.empty() || mSolverFunctions.top().name != val1)
@@ -671,8 +675,38 @@ std::string Compiler::solveOPP(MathParser::OPP opp, std::string val1, std::strin
         addInstruction(Parser::SAVE, val1);
         tmp = val1;
     }
+    ///TODO: for unary operator the value to use is val2, not so good, might make a second function to be sure to have no confusion
+
+    else if(opp == MathParser::UNARY_MINUS)
+    {
+        addInstruction(Parser::LOAD, "0");
+        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::SAVE, tmp);
+    }
+    else if(opp == MathParser::UNARY_PLUS)
+        throw std::runtime_error("Implement unary plus, you fool");
+    else if(opp == MathParser::NOT)
+    {
+        addInstruction(Parser::LOAD, val2);
+        addInstruction(Parser::SAVE, tmp);
+        addInstruction(Parser::NOT, tmp);
+    }
+    else if(opp == MathParser::REFERENCE)
+    {
+        addInstruction(Parser::LOAD, val2);
+        addInstruction(Parser::SAVE, tmp);
+//        addInstruction(Parser::LOAD, "$CURRENT_ADDR - 4");
+//        addInstruction(Parser::SUB , std::to_string())
+//        addInstruction(Parser::SUB, val2);
+    }
+    else if(opp == MathParser::INDIRECTION)
+    {
+//        addInstruction(Parser::LOAD, val2);
+//        addInstruction(Parser::SAVE, tmp);
+//        addInstruction(Parser::NOT, tmp);
+    }
     else
-        throw std::runtime_error("OPP not handled: " + std::to_string(opp));
+        throw std::runtime_error("OPP not handled: " + opp.str);
 
     return tmp;
 }

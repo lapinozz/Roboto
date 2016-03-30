@@ -119,12 +119,12 @@ Memory Assembler::assemble(const std::string& assembly)
 
         if(instruction)
         {
-            symbols.push_back({currentMemory, tokens, (data ? type : Parser::UINT), (data ? 1 : 0)});
+            symbols.push_back({currentMemory, tokens, (data ? type : Parser::UINT), (data ? 1u : 0u)});
             memory.at<uint32_t>(currentMemory) = instruction + (type << Parser::TYPE_SHIFT);// + ((int)payload & Parser::OPERAND_MASK);
         }
         else
         {
-            symbols.push_back({currentMemory, tokens, type, 2});
+            symbols.push_back({currentMemory, tokens, type, 2u});
 
             if(type == Parser::CHAR)
                 currentMemory -= 3;
@@ -139,12 +139,13 @@ Memory Assembler::assemble(const std::string& assembly)
 //        for(size_t flag : s.flags)
 
         std::string payloadString;
-        for(int x = 0; x < s.toSolve.size(); x++)
+//        for(int x = 0; x < s.toSolve.size(); x++)
+        for(auto& toSolve : s.toSolve)
         {
-            if(labels[s.toSolve[x]])
-                s.toSolve[x] = std::to_string(labels[s.toSolve[x]]);
+            if(labels[toSolve])
+                toSolve = std::to_string(labels[toSolve]);
 
-            payloadString += s.toSolve[x] + " ";
+            payloadString += toSolve + " ";
         }
 
         double payload = MathParser::solve(MathParser::toPostfix(payloadString));

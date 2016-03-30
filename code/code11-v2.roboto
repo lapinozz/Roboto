@@ -40,10 +40,15 @@ function main()
 {
     int i = 99;
     i = 9;
-    //print i;
+    print i;
+    print &i;
+    i = &i;
+    print i;
+    print *i;
+//    print i;
 
-    //print getnum(100, 1);
-    //print getnum();
+//    print getnum(100, 1);
+//    print getnum();
 
     print hope();
     print hope(5);
@@ -52,15 +57,15 @@ function main()
     print getMemorySize();
     print getCurrentAddress();
 
-    //print getnum(0);
-    //print getnum(1);
-    //print getnum(2);
-    //print getnum(1);
-    //print getnum(9); //test comment
-    //print getnum(7);
-    //print getnum(2);
+//    print getnum(0);
+//    print getnum(1);
+//    print getnum(2);
+//    print getnum(1);
+//    print getnum(9); //test comment
+//    print getnum(7);
+//    print getnum(2);
 
-    //test();
+//    test();
 }
 
 function test()

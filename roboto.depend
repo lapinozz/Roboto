@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1449281373 source:/home/lapinozz/Documents/Projects/Roboto/Assembler.cpp
+1458223909 source:/home/lapinozz/Documents/Projects/Roboto/Assembler.cpp
 	"Assembler.h"
 	"MathParser.h"
 
@@ -39,7 +39,7 @@
 	<stdint.h>
 	<string>
 
-1449349185 /home/lapinozz/Documents/Projects/Roboto/BoxedFunction.hpp
+1458223875 /home/lapinozz/Documents/Projects/Roboto/BoxedFunction.hpp
 	"BoxedValue.hpp"
 	"FunctionBinder.hpp"
 
@@ -58,16 +58,16 @@
 1449455290 /home/lapinozz/Documents/Projects/Roboto/FunctionBinder.hpp
 	<functional>
 
-1447016031 /home/lapinozz/Documents/Projects/Roboto/MathParser.h
+1459046409 /home/lapinozz/Documents/Projects/Roboto/MathParser.h
 	"stdafx.h"
 
-1449503990 source:/home/lapinozz/Documents/Projects/Roboto/Compiler.cpp
+1459046083 source:/home/lapinozz/Documents/Projects/Roboto/Compiler.cpp
 	"Compiler.h"
 	"Utility.h"
 	"Parser.h"
 	"MathParser.h"
 
-1448651715 /home/lapinozz/Documents/Projects/Roboto/Compiler.h
+1458829815 /home/lapinozz/Documents/Projects/Roboto/Compiler.h
 	"stdafx.h"
 	"MathParser.h"
 	"Parser.h"
@@ -90,7 +90,7 @@
 1447536082 /home/lapinozz/Documents/Projects/Roboto/Linker.h
 	"Compiler.h"
 
-1456502623 source:/home/lapinozz/Documents/Projects/Roboto/main.cpp
+1458870178 source:/home/lapinozz/Documents/Projects/Roboto/main.cpp
 	"stdafx.h"
 	"Parser.h"
 	"Compiler.h"
@@ -99,10 +99,9 @@
 	"MathParser.h"
 	"Utility.h"
 
-1448915475 source:/home/lapinozz/Documents/Projects/Roboto/MathParser.cpp
+1458946101 source:/home/lapinozz/Documents/Projects/Roboto/MathParser.cpp
 	"MathParser.h"
 	"Utility.h"
-	"MathHelper.h"
 
 1456502730 /home/lapinozz/Documents/Projects/Roboto/MathHelper.h
 	"stdafx.h"

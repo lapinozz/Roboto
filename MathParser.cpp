@@ -2,96 +2,104 @@
 
 #include "Utility.h"
 
-MathParser::MathParser()
+std::string MathParser::toPostfix(const std::string& infix)
 {
-}
-
-std::string MathParser::toPostfix(std::string infix)
-{
-    for(unsigned int x = 0; x < infix.length(); x++)
+    std::string postfix;
+    for(size_t x = 0; x < infix.length(); x++)
     {
-        OPP opp = (x < infix.length() ? toOPP(infix.substr(x, 2)) : UNDEFINED);
-        if(toOPP(infix[x]) != UNDEFINED || opp != UNDEFINED)
+//        if(infix[x] == ' ')
+//            continue;
+
+        Operator opp;
+        for(size_t size = MAX_OPP_SIZE; size > 0; size--)
         {
-            infix.insert(x + 1 + (opp == UNDEFINED ? 0 : 1) - (infix.length() - 1 == x ? 1 : 0), " ");
-            infix.insert(x, " ");
-            x += (opp == UNDEFINED ? 0 : 1);
-            x++;
+            opp = toOPP(infix.substr(x, size));
+            if(opp != UNDEFINED)
+                break;
         }
-    }
 
-    removeExtraSpace(infix);
-
-    std::vector<std::string> tokens(split(infix, " "));
-
-    int lastWasOPP = true;
-    for(unsigned int x = 0; x < tokens.size(); x++)
-    {
-        OPP opp = toOPP(tokens[x]);
         if(opp != UNDEFINED)
         {
-            if(opp == COMMA)
-            {
-                tokens[x] = "#";
-                opp = FUNCTION_PARAM;
-            }
+            postfix += " ";
+            postfix += opp.str;
+            postfix += " ";
 
-            if(lastWasOPP && opp == SUB)
-            {
-                tokens[x] = "-1";
-                tokens.insert(tokens.begin() + x + 1, "*");
-            }
-            else if(lastWasOPP && opp == NOT)
-            {
-                tokens.insert(tokens.begin() + x, "0");
-                x++;
-            }
-            else if((!lastWasOPP
-                     && toOPP(tokens[x - 1]) != FUNCTION_PARAM) && opp == OPEN_PARENTHESES)
-            {
-                tokens.erase(tokens.begin() + x);
-                tokens.insert(tokens.begin() + x - 1, "(");
-
-                if(toOPP(tokens[x + 1]) != CLOSE_PARENTHESES)
-                    tokens.insert(tokens.begin() + x + 1, "#");
-
-                x++;
-                int diff = 1;
-                for(unsigned int y = x; y < tokens.size(); y++)
-                {
-                    opp = toOPP(tokens[y]);
-                    if(opp == OPEN_PARENTHESES)
-                        diff++;
-                    else if(opp == CLOSE_PARENTHESES)
-                    {
-                        diff--;
-                        if(diff == 0)
-                        {
-                            tokens.insert(tokens.begin() + y, "0");
-                            tokens.insert(tokens.begin() + y, "@");
-                            break;
-                        }
-                    }
-                }
-
-                opp = toOPP(tokens[x]);
-            }
+            x += (opp.str.size() ? opp.str.size() - 1 : 0);
         }
-
-        lastWasOPP = opp != UNDEFINED && opp != CLOSE_PARENTHESES;
+        else
+            postfix += infix[x];
     }
 
-//    for(unsigned int x = 0; x < tokens.size(); x++)
-//        std::cout << tokens[x] << " ";
-//
-//    std::cout << std::endl;
+    removeExtraSpace(postfix);
+//    std::cout << postfix << std::endl;
+
+    std::stack<bool> insideFunctions;
+    insideFunctions.push(false);
+
+    std::vector<std::string> tokens;
+    std::vector<std::string> symbols = split(postfix, " ");
+
+    for(size_t x = 0; x < symbols.size(); x++)
+    {
+        auto prevOpp = x == 0 ? toOPP(ADD) : toOPP(symbols[x - 1]); //previous opp
+        auto nextOpp = x == symbols.size() - 1 ? toOPP(ADD) : toOPP(symbols[x + 1]);  //current opp
+
+        Unary unary = ANY;
+        if(prevOpp != UNDEFINED && prevOpp != CLOSE_PARENTHESES)
+            unary = LEFT;
+//        else if(nextOpp != UNDEFINED && nextOpp != OPEN_PARENTHESES)
+//            unary = RIGHT;
+        else
+            unary = BINARY;
+
+        auto currOpp = toOPP(symbols[x], unary);
+
+        if(currOpp != UNDEFINED)
+        {
+            if(insideFunctions.top() && currOpp == COMMA)
+                currOpp = toOPP(FUNCTION_PARAM);
+
+            tokens.push_back(currOpp.encodedStr);
+
+            if(currOpp == OPEN_PARENTHESES && prevOpp != UNDEFINED)
+            {
+                insideFunctions.push(false);
+            }
+            else if(currOpp == OPEN_PARENTHESES && prevOpp == UNDEFINED)
+            {
+                insideFunctions.push(true);
+                std::swap(tokens[tokens.size() - 1], tokens[tokens.size() - 2]);
+
+                if(nextOpp != CLOSE_PARENTHESES)
+                    tokens.push_back(toOPP(FUNCTION_PARAM).encodedStr);
+            }
+            else if(currOpp == CLOSE_PARENTHESES)
+            {
+                if(insideFunctions.top())
+                {
+                    tokens.emplace_back("0");
+                    tokens.push_back(toOPP(FUNCTION_CALL).encodedStr);
+
+                    std::swap(tokens[tokens.size() - 1], tokens[tokens.size() - 3]);
+                }
+
+                insideFunctions.pop();
+            }
+        }
+        else
+            tokens.push_back(symbols[x]);
+    }
+
+    for(const auto& token : tokens)
+        std::cout << (toOPP(token) != UNDEFINED ? toOPP(token).str : token) << " ";
+    std::cout << std::endl;
 
     std::stack<std::string> s;
-    std::string postfix = "";
+    postfix.clear();
 
-    for(std::string& token : tokens)
+    for(auto& token : tokens)
     {
-        OPP opp = toOPP(token);
+        auto opp = toOPP(token);
         if(opp != UNDEFINED)
         {
             if(opp == OPEN_PARENTHESES)
@@ -109,7 +117,7 @@ std::string MathParser::toPostfix(std::string infix)
             }
             else
             {
-                while(!s.empty() && toOPP(s.top()) != OPEN_PARENTHESES && hasPrecedence(toOPP(s.top()), opp))
+                while(!s.empty() && toOPP(s.top()) != OPEN_PARENTHESES && toOPP(s.top()) < opp)
                 {
                     postfix += s.top() + " ";
                     s.pop();
@@ -127,6 +135,11 @@ std::string MathParser::toPostfix(std::string infix)
         s.pop();
     }
 
+    for(const auto& token : split(postfix, " "))
+        std::cout << (toOPP(token) != UNDEFINED ? toOPP(token).str : token) << " ";
+    std::cout << std::endl;
+
+
     return postfix;
 }
 
@@ -138,13 +151,19 @@ float MathParser::solve(std::string postfix)
     std::stack<std::string> s;
     for(std::string& token : tokens)
     {
-        OPP opp = toOPP(token);
+        auto opp = toOPP(token);
         if(opp != UNDEFINED)
         {
             float x = std::stof(s.top());
             s.pop();
-            float y = std::stof(s.top());
-            s.pop();
+
+            float y = 0.f;
+            if(opp.unary == BINARY)
+            {
+                y = std::stof(s.top());
+                s.pop();
+            }
+
             s.push(std::to_string(solveOPP(opp, y, x)));
         }
         else
@@ -156,7 +175,7 @@ float MathParser::solve(std::string postfix)
 
 float MathParser::solveOPP(OPP opp, float val1, float val2)
 {
-    if(opp == ADD)
+    if(opp == MathParser::ADD)
         return val1 + val2;
     else if(opp == SUB)
         return val1 - val2;
@@ -184,6 +203,13 @@ float MathParser::solveOPP(OPP opp, float val1, float val2)
         return val1 <= val2;
     else if(opp == COMPARE_GREATER_OR_EQUALE)
         return val1 >= val2;
+
+    ///TODO: for unary operator the value to use is val2, not so good, might make a second function to be sure to have no confusion
+
+    else if(opp == UNARY_MINUS)
+        return -val2;
+    else if(opp == UNARY_PLUS)
+        return +val2;
     else if(opp == NOT)
         return !val2;
     else
@@ -192,97 +218,31 @@ float MathParser::solveOPP(OPP opp, float val1, float val2)
     }
 }
 
-MathParser::OPP MathParser::toOPP(std::string opp)
+MathParser::Operator MathParser::toOPP(std::string strOpp, Unary unary)
 {
-    if(opp.length() == 2)
+    static_assert(sizeof(operators) / sizeof(Operator) == (size_t)COUNT, "Number of definition should be equal to number of declaration minus one");
+
+    if(strOpp.size() >= 2 && strOpp[0] == OPP_IDENTIFIER)
+        return toOPP((OPP)strOpp[1]);
+
+    for(const auto& opp : operators)
     {
-        if(opp == "==")
-            return COMPARE_EQUALITY;
-        else if(opp == "!=")
-            return COMPARE_NOT_EQUALE;
-        else if(opp == "<=")
-            return COMPARE_LESS_OR_EQUALE;
-        else if(opp == ">=")
-            return COMPARE_GREATER_OR_EQUALE;
-        else if(opp == "||")
-            return OR;
-        else if(opp == "&&")
-            return AND;
-        else if(opp == "//")
-            return COMMENT;
+        if((unary == ANY || opp.unary == unary || opp.unary == ANY) && opp == strOpp)
+            return opp;
     }
 
-    return opp.length() == 1 ? toOPP(opp[0]) : UNDEFINED;
+    return {};
 }
 
-MathParser::OPP MathParser::toOPP(char opp)
+MathParser::Operator MathParser::toOPP(OPP opp)
 {
-    if(opp == '+')
-        return ADD;
-    else if(opp == '-')
-        return SUB;
-    else if(opp == '*')
-        return MUL;
-    else if(opp == '/')
-        return DIV;
-    else if(opp == '^')
-        return EXP;
-    else if(opp == '%')
-        return MOD;
-    else if(opp == '(')
-        return OPEN_PARENTHESES;
-    else if(opp == ')')
-        return CLOSE_PARENTHESES;
-    else if(opp == ',')
-        return COMMA;
-    else if(opp == '#')
-        return FUNCTION_PARAM;
-    else if(opp == '@')
-        return FUNCTION_CALL;
-    else if(opp == '=')
-        return ASSIGNMENT;
-    else if(opp == '!')
-        return NOT;
-    else if(opp == '<')
-        return COMPARE_LESS;
-    else if(opp == '>')
-        return COMPARE_GREATER;
-    else if(opp == '{')
-        return SCOPE_START;
-    else if(opp == '}')
-        return SCOPE_END;
-    else if(opp == ';')
-        return LINE_SEPARATOR;
+    static_assert(sizeof(operators) / sizeof(Operator) == (size_t)COUNT, "Number of definition should be equal to number of declaration minus one");
 
-    return UNDEFINED;
-}
+    for(const auto& o : operators)
+    {
+        if(o == opp)
+            return o;
+    }
 
-int MathParser::hasPrecedence(OPP opp1, OPP opp2)
-{
-    if(getWeight(opp1) == getWeight(opp2))
-        return true;
-
-    return getWeight(opp1) > getWeight(opp2);
-}
-
-int MathParser::getWeight(OPP opp)
-{
-    if(opp == OR)
-        return 1;
-    else if(opp == AND)
-        return 2;
-    else if(opp == COMPARE_EQUALITY || opp == COMPARE_NOT_EQUALE)
-        return 3;
-    else if(opp == COMPARE_LESS || opp == COMPARE_GREATER || opp == COMPARE_GREATER_OR_EQUALE || opp == COMPARE_LESS_OR_EQUALE)
-        return 4;
-    else if(opp == ADD || opp == SUB)
-        return 5;
-    else if(opp == MUL || opp == DIV || opp == MOD)
-        return 6;
-    else if(opp == EXP)
-        return 7;
-    else if(opp == NOT)
-        return 8;
-
-    return -1;
+    return {};
 }

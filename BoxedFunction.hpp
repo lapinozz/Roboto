@@ -118,10 +118,11 @@ class BoxedFunction
 
         std::vector<Type_Info> getParameterType() const
         {
-            std::vector<Type_Info> types;
-            for(int x = 1; x < mTypes.size(); x++)
-                types.push_back(mTypes[x]);
-            return types;
+//            std::vector<Type_Info> types;
+//            for(int x = 1; x < mTypes.size(); x++)
+//                types.push_back(mTypes[x]);
+//            return types;
+            return {mTypes.begin()+1, mTypes.end()};
         }
 
         int getParameterCount() const
