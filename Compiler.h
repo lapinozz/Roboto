@@ -236,8 +236,8 @@ class Compiler
         std::map<Function::FunctionSignature, Function>& findFunction(std::string name);
         Function& findFunction(std::string name, Function::FunctionSignature signature);
 
-        void addInstruction(Parser::OPP opp, std::string flag = "", Parser::Type type = Parser::INT);
-        void addInstruction(Parser::OPP opp, int operand, Parser::Type type = Parser::INT);
+        void addInstruction(Parser::OPP opp, std::string flag = "", Parser::Type type = Parser::INT, bool ptr = false);
+        void addInstruction(Parser::OPP opp, int operand, Parser::Type type = Parser::INT, bool ptr = false);
 
         std::string solve(std::string postfix);
         std::string solveOPP(MathParser::Operator opp, std::string val1, std::string val2);

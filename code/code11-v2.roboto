@@ -38,24 +38,31 @@ function getnum()
 
 function main()
 {
-    int i = 99;
-    i = 9;
-    print i;
-    print &i;
-    i = &i;
-    print i;
-    print *i;
+    int a = 0;
+    int b = 9;
+//    print i;
+    print a;
+    print b;
+    print &a;
+    print &b;
+    a = &b;
+    print a;
+    print *a;
+    b = 99;
+    print *a;
+    *a = 4;
+    print b;
 //    print i;
 
 //    print getnum(100, 1);
 //    print getnum();
 
-    print hope();
-    print hope(5);
+//    print hope();
+//    print hope(5);
 
-    print __programSize;
-    print getMemorySize();
-    print getCurrentAddress();
+//    print __programSize;
+//    print getMemorySize();
+//    print getCurrentAddress();
 
 //    print getnum(0);
 //    print getnum(1);

@@ -33,6 +33,7 @@ class Parser
         LOAD           = 4,
         SAVE           = 5,
 
+
         ADD            = 6,
         SUB            = 7,
         DIV            = 8,
@@ -47,6 +48,7 @@ class Parser
 
         //experimental
         PTR_SET_OFFSET = 15,
+        LEA            = 18,
 
 
         //operand shall(I like that word) be and address (or pointer to address) to function ID

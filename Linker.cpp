@@ -69,7 +69,7 @@ Memory Linker::link(std::vector<Compiler::CompiledData>& compiledDatas)
         for(int addr : s.flagLines)
             memory.at<uint32_t>(addr) += s.addr;
 
-//        std::cout << "Symbol: " << pair.first << " addr " << s.addr << std::endl;
+        std::cout << "Symbol: " << pair.first << " addr " << s.addr << std::endl;
     }
 
     memory.resize(currentAddr);

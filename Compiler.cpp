@@ -318,6 +318,7 @@ Compiler::CompiledData Compiler::compile()
                 addInstruction(Parser::JMPZERO, getContextPart(mContext.top().nextPart));
             }
         }
+        else if(tokens[0] == "{");
 //        else if(tokens[0] == "end")
         else if(tokens[0] == "}")
         {
@@ -368,13 +369,17 @@ Compiler::CompiledData Compiler::compile()
             addSymbole(tokens[0], mCurrentAddr, Symbol::CONST);
 
         }
-        else if(tokens.size() >= 2 && tokens[1] == "=")
-        {
-            solve(MathParser::toPostfix(line));
-//            addInstruction(Parser::LOAD, solve(MathParser::toPostfix(line.substr(tokens[0].length() + 3))));
-//            addInstruction(Parser::SAVE, tokens[0]);
-        }
-        else if(tokens.size() >= 2 && tokens[1] == "(")//function call
+//        else if(tokens.size() >= 2 && tokens[1] == "=")
+//        {
+//            solve(MathParser::toPostfix(line));
+////            addInstruction(Parser::LOAD, solve(MathParser::toPostfix(line.substr(tokens[0].length() + 3))));
+////            addInstruction(Parser::SAVE, tokens[0]);
+//        }
+//        else if(tokens.size() >= 2 && tokens[1] == "(")//function call
+//        {
+//            solve(MathParser::toPostfix(line));
+//        }
+        else
         {
             solve(MathParser::toPostfix(line));
         }
@@ -511,6 +516,14 @@ std::string Compiler::solve(std::string postfix)
     while(!mSolverFunctions.empty())
         mSolverFunctions.pop();
 
+    if(s.top()[0] == '*')
+    {
+        std::string tmp = "SOLVER_TMP_" + std::to_string(mCurrentSolverTemp++);
+        addInstruction(Parser::LOAD, s.top().substr(1), Parser::INT, true);
+        addInstruction(Parser::SAVE, tmp);
+        s.top() = tmp;
+    }
+
     return s.top();
 }
 
@@ -518,28 +531,36 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
 {
     std::string tmp = "SOLVER_TMP_" + std::to_string(mCurrentSolverTemp++);
 
+    bool ptr1 = val1[0] == '*';
+    bool ptr2 = val2[0] == '*';
+
+    if(ptr1)
+        val1 = val1.substr(1);
+    if(ptr2)
+        val2 = val2.substr(1);
+
     if(opp == MathParser::ADD)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::ADD, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::ADD, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
     }
     else if(opp == MathParser::SUB)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::SUB, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
     }
     else if(opp == MathParser::MUL)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::MUL, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::MUL, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
     }
     else if(opp == MathParser::DIV)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::DIV, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::DIV, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
     }
 //    else if(opp == EXP) // need to add SML OPP
@@ -548,7 +569,7 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
 //        return (int)val1 % (int)val2;
     else if(opp == MathParser::OR)
     {
-        addInstruction(Parser::LOAD, val1);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
         addInstruction(Parser::JMPZERO, 2*4, Parser::JMP_RELATIVE_ADD);
         addInstruction(Parser::JMP, 2*4, Parser::JMP_RELATIVE_ADD);
         addInstruction(Parser::LOAD, val2);
@@ -556,29 +577,29 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
     }
     else if(opp == MathParser::AND)
     {
-        addInstruction(Parser::LOAD, val1);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
         addInstruction(Parser::JMPZERO, 3*4, Parser::JMP_RELATIVE_ADD);
-        addInstruction(Parser::LOAD, val2);
+        addInstruction(Parser::LOAD, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
     }
     else if(opp == MathParser::COMPARE_EQUALITY)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::SUB, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
         addInstruction(Parser::NOT, tmp);
     }
     else if(opp == MathParser::COMPARE_NOT_EQUALE)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::SUB, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
         addInstruction(Parser::BOOL, tmp);
     }
     else if(opp == MathParser::COMPARE_LESS)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::SUB, val2, Parser::INT, ptr2);
         addInstruction(Parser::ADD, "1");
         addInstruction(Parser::SAVE, tmp);
         addInstruction(Parser::JMPLESS, 2*4, Parser::JMP_RELATIVE_ADD);
@@ -586,8 +607,8 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
     }
     else if(opp == MathParser::COMPARE_GREATER)
     {
-        addInstruction(Parser::LOAD, val2);
-        addInstruction(Parser::SUB, val1);
+        addInstruction(Parser::LOAD, val2), Parser::INT, ptr2;
+        addInstruction(Parser::SUB, val1, Parser::INT, ptr1);
         addInstruction(Parser::ADD, "1");
         addInstruction(Parser::SAVE, tmp);
         addInstruction(Parser::JMPLESS, 2*4, Parser::JMP_RELATIVE_ADD);
@@ -595,16 +616,16 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
     }
     else if(opp == MathParser::COMPARE_LESS_OR_EQUALE)
     {
-        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::LOAD, val1, Parser::INT, ptr1);
+        addInstruction(Parser::SUB, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
         addInstruction(Parser::JMPLESS, 2*4, Parser::JMP_RELATIVE_ADD);
         addInstruction(Parser::NOT, tmp);
     }
     else if(opp == MathParser::COMPARE_GREATER_OR_EQUALE)
     {
-        addInstruction(Parser::LOAD, val2);
-        addInstruction(Parser::SUB, val1);
+        addInstruction(Parser::LOAD, val2, Parser::INT, ptr2);
+        addInstruction(Parser::SUB, val1, Parser::INT, ptr1);
         addInstruction(Parser::SAVE, tmp);
 //        addInstruction(Parser::JMPLESS, mCurrentAddr + 2);
         addInstruction(Parser::JMPLESS, 2*4, Parser::JMP_RELATIVE_ADD);
@@ -670,9 +691,9 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
     else if(opp == MathParser::ASSIGNMENT)
     {
 //        addInstruction(Parser::LOAD, val1);
-        addInstruction(Parser::LOAD, val2);
+        addInstruction(Parser::LOAD, val2, Parser::INT, ptr2);
 //        addInstruction(Parser::SAVE, val2);
-        addInstruction(Parser::SAVE, val1);
+        addInstruction(Parser::SAVE, val1, Parser::INT, ptr1);
         tmp = val1;
     }
     ///TODO: for unary operator the value to use is val2, not so good, might make a second function to be sure to have no confusion
@@ -680,20 +701,20 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
     else if(opp == MathParser::UNARY_MINUS)
     {
         addInstruction(Parser::LOAD, "0");
-        addInstruction(Parser::SUB, val2);
+        addInstruction(Parser::SUB, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
     }
     else if(opp == MathParser::UNARY_PLUS)
         throw std::runtime_error("Implement unary plus, you fool");
     else if(opp == MathParser::NOT)
     {
-        addInstruction(Parser::LOAD, val2);
+        addInstruction(Parser::LOAD, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
         addInstruction(Parser::NOT, tmp);
     }
     else if(opp == MathParser::REFERENCE)
     {
-        addInstruction(Parser::LOAD, val2);
+        addInstruction(Parser::LEA, val2, Parser::INT, ptr2);
         addInstruction(Parser::SAVE, tmp);
 //        addInstruction(Parser::LOAD, "$CURRENT_ADDR - 4");
 //        addInstruction(Parser::SUB , std::to_string())
@@ -701,9 +722,11 @@ std::string Compiler::solveOPP(MathParser::Operator opp, std::string val1, std::
     }
     else if(opp == MathParser::INDIRECTION)
     {
-//        addInstruction(Parser::LOAD, val2);
+//        addInstruction(Parser::LOAD, val2, Parser::INT, true);
 //        addInstruction(Parser::SAVE, tmp);
 //        addInstruction(Parser::NOT, tmp);
+
+        tmp = "*" + tmp;
     }
     else
         throw std::runtime_error("OPP not handled: " + opp.str);
@@ -822,18 +845,19 @@ Compiler::Function& Compiler::findFunction(std::string name, Function::FunctionS
     return mFunctions[name][signature];
 }
 
-void Compiler::addInstruction(Parser::OPP opp, std::string flag, Parser::Type type)
+void Compiler::addInstruction(Parser::OPP opp, std::string flag, Parser::Type type, bool ptr)
 {
     if(!flag.empty())
         addFlag(flag, mCurrentAddr);
 
-    addInstruction(opp, 0, type);
+    addInstruction(opp, 0, type, ptr);
 }
 
-void Compiler::addInstruction(Parser::OPP opp, int operand, Parser::Type type)
+void Compiler::addInstruction(Parser::OPP opp, int operand, Parser::Type type, bool ptr)
 {
     mDatas.memory.resize(mDatas.memory.size() + 4);
-    mDatas.memory.at<uint32_t>(mCurrentAddr) = ((opp << Parser::OPP_SHIFT) + (type << Parser::TYPE_SHIFT) + (operand & Parser::OPERAND_MASK));
+//    mDatas.memory.at<uint32_t>(mCurrentAddr) = ((ptr << Parser::PTR_SHIFT) + (opp << Parser::OPP_SHIFT) + (type << Parser::TYPE_SHIFT) + (operand & Parser::OPERAND_MASK));
+    mDatas.memory.at<uint32_t>(mCurrentAddr) = ((ptr * Parser::PTR_MASK) + (opp << Parser::OPP_SHIFT) + (type << Parser::TYPE_SHIFT) + (operand & Parser::OPERAND_MASK));
     mCurrentAddr += 4;
 }
 

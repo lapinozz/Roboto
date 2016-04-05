@@ -100,8 +100,12 @@ bool Parser::executeOPP(const OPP& opp, const T& operande)
 
         saveFunctionReturn(func(args));
     }
+    else if(opp == LEA)
+        mAccumulator = operande;
     else if(opp == END)
         return true;
+    else
+        throw std::runtime_error("Invalide opp");
 
     return false;
 }
